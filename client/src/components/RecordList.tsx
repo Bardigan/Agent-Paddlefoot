@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 const API = import.meta.env.VITE_API_URL || "localhost";
 
+
 const Record = (props: any) => (
   <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
     <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
