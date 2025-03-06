@@ -10,7 +10,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/record", records);
+app.use("/score", records);
 
 // handle default /
 app.get("/", (req, res) => {

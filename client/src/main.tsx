@@ -1,10 +1,8 @@
-import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
-import Record from "./components/Record";
-import RecordList from "./components/RecordList";
-import "./index.css";
+import GameDeck from "./components/GameDeck";
+import "./main.scss";
 
 const router = createBrowserRouter([
   {
@@ -13,27 +11,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <RecordList />,
-      },
-    ],
-  },
-  {
-    path: "/create",
-    element: <App />,
-    children: [
-      {
-        path: "/create",
-        element: <Record />,
-      },
-    ],
-  },
-  {
-    path: "/edit/:id",
-    element: <App />,
-    children: [
-      {
-        path: "/edit/:id",
-        element: <Record />,
+        element: <GameDeck />,
       },
     ],
   },
@@ -41,11 +19,7 @@ const router = createBrowserRouter([
 
 const rootElement = document.getElementById("root");
 if (rootElement !== null) {
-  ReactDOM.createRoot(rootElement).render(
-    <React.StrictMode>
-      <RouterProvider router={router} />
-    </React.StrictMode>
-  );
+  ReactDOM.createRoot(rootElement).render(<RouterProvider router={router} />);
 } else {
   console.error("Root element not found");
 }

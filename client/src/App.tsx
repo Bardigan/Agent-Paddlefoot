@@ -1,12 +1,16 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import { GameContextProvider } from './context/GameContext';
+import './App.scss';
 
 const App = () => {
   return (
-    <div className="w-full p-6">
-      <Navbar />
-      <Outlet />
-    </div>
+    <GameContextProvider>
+      <div className="wrapper">
+        <Navbar />
+        <Outlet />
+      </div>
+    </GameContextProvider>
   );
 };
 export default App;
