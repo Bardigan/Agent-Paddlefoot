@@ -11,8 +11,6 @@ export default function Navbar() {
 
   const initialId = '67c8881551d111d53dd71c90';
   
-
-  
   const {
     data,
     loadingGet,
