@@ -12,8 +12,18 @@ const AppWrapper = () => {
   useEffect(() => {
       const storedToken = localStorage.getItem('token');
       const tokenTimestamp = localStorage.getItem('tokenTimestamp');
+      
       if (storedToken && tokenTimestamp) {
-        context?.setToken(storedToken);
+        const tokenDate = new Date(tokenTimestamp);
+        const tokenAge = Date.now() - tokenDate.getTime();
+        const eightHoursInMilliseconds = 8 * 60 * 60 * 1000;
+  
+        if (tokenAge < eightHoursInMilliseconds) {
+          context?.setToken(storedToken);
+        } else {
+          localStorage.removeItem('token');
+          localStorage.removeItem('tokenTimestamp');
+        }
       }
     }, []);
 
