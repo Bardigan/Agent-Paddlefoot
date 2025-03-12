@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import GameDeck from "./components/GameDeck";
 import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 import "./main.scss";
 
 const router = createBrowserRouter([
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <GameDeck />,
+        element: <ProtectedRoute element={<GameDeck />} />,
       },
       {
         path: "/login",
