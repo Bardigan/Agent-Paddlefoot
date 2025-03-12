@@ -9,14 +9,14 @@ interface ScoreData {
 
 interface UseGetDataReturn {
   data: ScoreData | null;
-  loadingGet: boolean;
+  loadingGet: boolean | null;
   errorGet: string | null;
   getData: (id?: string) => Promise<void>;
 }
 
 export const useGetData = (initialId: string): UseGetDataReturn => {
   const [data, setData] = useState<ScoreData | null>(null);
-  const [loadingGet, setLoadingGet] = useState<boolean>(false);
+  const [loadingGet, setLoadingGet] = useState<boolean | null>(null);
   const [errorGet, setErrorGet] = useState<string | null>(null);
 
   const getData = async (id: string = initialId): Promise<void> => {
@@ -50,13 +50,13 @@ export const useGetData = (initialId: string): UseGetDataReturn => {
 };
 
 interface UsePostDataReturn {
-  loadingPost: boolean;
+  loadingPost: boolean | null;
   errorPost: string | null;
   postData: (id?: string, newRecord?: number) => Promise<void>;
 }
 
 export const usePostData = (initialId: string): UsePostDataReturn => {
-  const [loadingPost, setLoadingPost] = useState<boolean>(false);
+  const [loadingPost, setLoadingPost] = useState<boolean | null>(null);
   const [errorPost, setErrorPost] = useState<string | null>(null);
 
   const postData = async (id: string = initialId, newRecord?: number): Promise<void> => {
@@ -88,13 +88,13 @@ export const usePostData = (initialId: string): UsePostDataReturn => {
 };
 
 interface UseUpdateDataReturn {
-  loadingUpdate: boolean;
+  loadingUpdate: boolean | null;
   errorUpdate: string | null;
   updateData: (id?: string, newRecord?: number) => Promise<void>;
 }
 
 export const useUpdateData = (initialId: string): UseUpdateDataReturn => {
-  const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
+  const [loadingUpdate, setLoadingUpdate] = useState<boolean | null>(null);
   const [errorUpdate, setErrorUpdate] = useState<string | null>(null);
 
   const updateData = async (id: string = initialId, newRecord?: number): Promise<void> => {

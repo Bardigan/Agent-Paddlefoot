@@ -2,6 +2,7 @@ import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import GameDeck from "./components/GameDeck";
+import Login from "./components/Login";
 import "./main.scss";
 
 const router = createBrowserRouter([
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <GameDeck />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
       },
     ],
   },

@@ -5,6 +5,8 @@ interface GameContextType {
   setScore: (value: number) => void;
   gameStatus: boolean | null;
   setGameStatus: (value: boolean | null) => void;
+  token: string | null;
+  setToken: (value: string | null) => void;
 }
 
 export const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -16,12 +18,15 @@ interface DummyProviderProps {
 export const GameContextProvider: React.FC<DummyProviderProps> = ({ children }) => {
   const [score, setScore] = useState<number>(0);
   const [gameStatus, setGameStatus] = useState<boolean | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   const customValues = {
     score,
     setScore,
     gameStatus,
-    setGameStatus
+    setGameStatus,
+    token,
+    setToken
   }
 
   return (
