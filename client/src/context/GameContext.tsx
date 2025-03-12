@@ -31,8 +31,8 @@ export const GameContextProvider: React.FC<DummyProviderProps> = ({ children }) 
       if (tokenAge < eightHoursInMilliseconds) {
         setToken(storedToken);
       } else {
-        localStorage.removeItem('token');
-        localStorage.removeItem('tokenTimestamp');
+        //localStorage.removeItem('token');
+        //localStorage.removeItem('tokenTimestamp');
       }
     }
   }, []);
