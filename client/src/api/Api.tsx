@@ -14,7 +14,7 @@ interface UseGetDataReturn {
   getData: (id?: string) => Promise<void>;
 }
 
-export const useGetData = (initialId: string): UseGetDataReturn => {
+export const useGetData = (initialId: string, token: string | null | undefined): UseGetDataReturn => {
   const [data, setData] = useState<ScoreData | null>(null);
   const [loadingGet, setLoadingGet] = useState<boolean | null>(null);
   const [errorGet, setErrorGet] = useState<string | null>(null);
@@ -27,6 +27,7 @@ export const useGetData = (initialId: string): UseGetDataReturn => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
       });
       if (!response.ok) {
@@ -55,7 +56,7 @@ interface UsePostDataReturn {
   postData: (id?: string, newRecord?: number) => Promise<void>;
 }
 
-export const usePostData = (initialId: string): UsePostDataReturn => {
+export const usePostData = (initialId: string, token: string | null | undefined): UsePostDataReturn => {
   const [loadingPost, setLoadingPost] = useState<boolean | null>(null);
   const [errorPost, setErrorPost] = useState<string | null>(null);
 
@@ -67,6 +68,7 @@ export const usePostData = (initialId: string): UsePostDataReturn => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: newRecord !== undefined ? JSON.stringify({ score: newRecord.toString() }) : undefined,
       });
@@ -93,7 +95,7 @@ interface UseUpdateDataReturn {
   updateData: (id?: string, newRecord?: number) => Promise<void>;
 }
 
-export const useUpdateData = (initialId: string): UseUpdateDataReturn => {
+export const useUpdateData = (initialId: string, token: string | null | undefined): UseUpdateDataReturn => {
   const [loadingUpdate, setLoadingUpdate] = useState<boolean | null>(null);
   const [errorUpdate, setErrorUpdate] = useState<string | null>(null);
 
@@ -105,6 +107,7 @@ export const useUpdateData = (initialId: string): UseUpdateDataReturn => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: newRecord !== undefined ? JSON.stringify({ score: newRecord.toString() }) : undefined,
       });

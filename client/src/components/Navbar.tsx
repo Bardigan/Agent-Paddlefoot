@@ -16,13 +16,13 @@ export default function Navbar() {
     loadingGet,
     errorGet,
     getData,
-  } = useGetData(initialId);
+  } = useGetData(initialId, context?.token);
 
   const {
     loadingUpdate,
     errorUpdate,
     updateData,
-  } = useUpdateData(initialId);
+  } = useUpdateData(initialId, context?.token);
 
   useEffect(() => {
     getData();
