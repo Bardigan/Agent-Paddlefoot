@@ -48,12 +48,14 @@ const AuthForm: React.FC = () => {
           console.log("Login successful:", data);
           context?.setToken(data.token);
           localStorage.setItem("token", data.token);
+          localStorage.setItem("tokenTimestamp", new Date().toISOString());
         } else {
           // Handle successful registration
           console.log("Registration successful:", data);
           // Optionally, switch to login form after successful registration
           context?.setToken(data.token);
           localStorage.setItem("token", data.token);
+          localStorage.setItem("tokenTimestamp", new Date().toISOString());
           setIsLogin(true);
         }
         navigate("/"); // Redirect to home page
