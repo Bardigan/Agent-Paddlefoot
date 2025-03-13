@@ -46,12 +46,12 @@ const AuthForm: React.FC = () => {
         if (isLogin) {
           // Handle successful login, e.g., store token
           console.log("Login successful:", data);
-          const expirationTime = new Date(new Date().getTime());
+          const expirationTime = new Date(new Date().getTime() + (28740 * 1000));
           context?.login(data.token, expirationTime.toISOString(), false);
         } else {
           // Handle successful registration
           console.log("Registration successful:", data);
-          const expirationTime = new Date(new Date().getTime());
+          const expirationTime = new Date(new Date().getTime() + (28740 * 1000));
           context?.login(data.token, expirationTime.toISOString(), false);
           setIsLogin(true);
         }
