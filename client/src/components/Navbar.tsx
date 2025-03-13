@@ -16,13 +16,13 @@ export default function Navbar() {
     loadingGet,
     errorGet,
     getData,
-  } = useGetData(initialId, context?.token);
+  } = useGetData(initialId, localStorage.getItem('token')? localStorage.getItem('token') : null);
 
   const {
     loadingUpdate,
     errorUpdate,
     updateData,
-  } = useUpdateData(initialId, context?.token);
+  } = useUpdateData(initialId, localStorage.getItem('token')? localStorage.getItem('token') : null);
 
   useEffect(() => {
     getData();
