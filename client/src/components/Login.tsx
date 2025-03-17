@@ -97,7 +97,7 @@ const AuthForm: React.FC = () => {
           </div>
           <button type="submit">{isLogin ? "Login" : "Register"}</button>
         </form>
-        <div>
+        <div className="auth-form__switch">
           {isLogin ? "Don't have an account?" : "Already have an account?"}
           <div className="login-switch" onClick={toggleForm}>
             {isLogin ? "Register" : "Login"}

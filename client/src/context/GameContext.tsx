@@ -1,5 +1,9 @@
 import React, { createContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
+// 30s max per stage
+// logout btn
+// secure registration input
+
 interface GameContextType {
   level: number;
   setLevel: (value: number) => void;
