@@ -35,6 +35,19 @@ export default function Navbar() {
   }, [loadingUpdate]);
 
   useEffect(() => {
+    if (timer < 30000) {
+      setTimer(0);
+    }
+  }, [context?.level]);
+
+  useEffect(() => {
+    if (timer > 30000) {
+      context?.setGameStatus(false);
+      setTimer(30000);
+    }
+  }, [timer]);
+
+  useEffect(() => {
     if (data !== null && errorGet === null && !loadingGet) {
       if (context?.score && Number(context.score) > Number(data.score)) {
         updateData(initialId, context?.score);
@@ -52,14 +65,15 @@ export default function Navbar() {
       interval = setInterval(() => {
         setTimer(prevTimer => prevTimer + 10);
       }, 10);
-    } else if (context?.gameStatus === null) {
-      // game reset
-      setFinalTimerResult(null);
-      setTimer(0);
     } else if (context?.gameStatus === false) {
       // game over and paused
       getData();
       setFinalTimerResult(timer);
+      setTimer(0);
+    } else if (context?.gameStatus === null) {
+      // game reset
+      setFinalTimerResult(null);
+      context?.setLevel(1);
       setTimer(0);
     }
     return () => clearInterval(interval);

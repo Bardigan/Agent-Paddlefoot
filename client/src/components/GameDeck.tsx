@@ -2,9 +2,6 @@ import { useState, useEffect, useRef, useContext } from "react";
 import "./GameDeck.scss";
 import { GameContext } from '../context/GameContext';
 
-// always have a tunel of 50x50 between player/coins/exit and walls
-// best score to API
-
 
 const PLAYER_SPEED = 5; // Player movement speed
 const ENEMY_SPEED = 10; // Enemy movement speed (twice as fast)
@@ -247,8 +244,6 @@ const PlatformerGame: React.FC = () => {
   const lastEnemyMove = useRef<number>(Date.now());
   const [gameIsStarted, setGameIsStarted] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [level, setLevel] = useState<number>(1);
-
 
   const context = useContext(GameContext);
   
@@ -309,6 +304,7 @@ const PlatformerGame: React.FC = () => {
         let potentialLeft = newLeft;
         const enemyWidth = enemy.type === 'doctor' ? 40 : 50;
         const enemyHeight = enemy.type === 'doctor' ? 80 : 50;
+        const level = context?.level ? context?.level : 1;
         const enemySpeed = enemy.type === 'doctor' ? (ENEMY_SPEED * 4) * level : ENEMY_SPEED * level;
 
         if (newDirection === 0) potentialTop -= enemySpeed; // up
@@ -408,6 +404,21 @@ const PlatformerGame: React.FC = () => {
     };
   }, [playerDirection]);
 
+  const handlePlayerLost = () => {
+    setPlayerDirection(null); // Stop player movement
+    context?.setGameStatus(false); // game over
+    setShowPopup(true);
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current); // Stop the game loop
+    }
+  }
+
+  useEffect(() => {
+    if (context?.gameStatus === false) {
+      handlePlayerLost();
+    } 
+  }, [context?.gameStatus]);
+
   useEffect(() => {
     enemies.forEach((enemy) => {
       const enemyWidth = enemy.type === 'doctor' ? 40 : 50;
@@ -418,9 +429,7 @@ const PlatformerGame: React.FC = () => {
         playerPos.top < enemy.top + enemyHeight &&
         playerPos.top + 50 > enemy.top
       ) {
-        setPlayerDirection(null); // Stop player movement
-        context?.setGameStatus(false); // game over
-        setShowPopup(true);
+        handlePlayerLost();
       }
     });
   }, [playerPos, enemies]);
@@ -522,16 +531,15 @@ const PlatformerGame: React.FC = () => {
       ) {
         setPlayerDirection(null); // Stop player movement
         resetGame(); // next level
-        setLevel((prev) => prev + 1);
+        context?.setLevel(context?.level + 1);
       }
     }
   }, [playerPos, door]);
 
   const handleClosePopup = () => {
-    console.log(context?.score);
     setShowPopup(false);
     resetGame();
-    setLevel(1);
+    context?.setLevel(1);
     context?.setGameStatus(null);
     context?.setScore(0);
     setScoreIncrement(0);

@@ -1,6 +1,8 @@
 import React, { createContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
 interface GameContextType {
+  level: number;
+  setLevel: (value: number) => void;
   score: number;
   setScore: (value: number) => void;
   gameStatus: boolean | null;
@@ -51,6 +53,7 @@ export const GameContextProvider: React.FC<DummyProviderProps> = ({ children }) 
   if (tokenData) {
     initialToken = tokenData.token;
   }
+  const [level, setLevel] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
   const [gameStatus, setGameStatus] = useState<boolean | null>(null);
   const [token, setToken] = useState<string | null>(initialToken);
@@ -89,7 +92,9 @@ export const GameContextProvider: React.FC<DummyProviderProps> = ({ children }) 
     login: loginHandler,
     logout: logoutHandler,
     token,
-    setToken
+    setToken,
+    level,
+    setLevel
   }
 
   return (
