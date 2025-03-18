@@ -1,7 +1,7 @@
 import React, { createContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
-// secure registration input
-// show error message on login/register
+// spinner
+// info bubble
 
 interface GameContextType {
   level: number;

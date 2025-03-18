@@ -1,6 +1,8 @@
 import React, { useState, ChangeEvent, FormEvent, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameContext } from '../context/GameContext';
+import { FaInfoCircle } from "react-icons/fa";
+import { ImSpinner11 } from "react-icons/im";
 import "./Login.scss";
 
 const API = import.meta.env.VITE_API_URL || "localhost";
@@ -33,6 +35,7 @@ const AuthForm: React.FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [formData, setFormData] = useState<FormData>({ username: "", password: "" });
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error messages
+  const [loading, setLoading] = useState<boolean>(false); // State for loading spinner
   const context = useContext(GameContext);
   const navigate = useNavigate();
 
@@ -50,6 +53,7 @@ const AuthForm: React.FC = () => {
 
     // Reset error message
     setErrorMessage(null);
+    setLoading(true); // Start loading spinner
 
     try {
       const response = await fetch(`${API}${url}`, {
@@ -73,10 +77,12 @@ const AuthForm: React.FC = () => {
         navigate("/"); // Redirect to home page
       } else {
         const errorData = await response.json();
-        setErrorMessage(errorData.message || "An error occurred. Please try again."); // Set error message
+        setErrorMessage(errorData.message || errorData.errors[0].msg || "An error occurred. Please try again."); // Set error message
       }
     } catch (error: unknown) {
       setErrorMessage((error as Error).message || "An unexpected error occurred."); // Handle unexpected errors
+    } finally {
+      setLoading(false); // Stop loading spinner
     }
   };
 
@@ -89,7 +95,15 @@ const AuthForm: React.FC = () => {
   return (
     <div className="auth-form-container">
       <div className="auth-form">
-        <h2>{isLogin ? "Login" : "Register"}</h2>
+        <h2 className="auth-form__header">
+          {isLogin ? "Login" : "Register"}
+          {!isLogin && (
+            <div className="tooltip-container">
+              <FaInfoCircle className="auth-form__icon" />
+              <div className="tooltip">No special signs, the password should be at least 6 characters long</div>
+            </div>
+          )}
+        </h2>
         <form onSubmit={handleSubmit}>
           <div>
             <label>Username:</label>
@@ -100,7 +114,7 @@ const AuthForm: React.FC = () => {
               onChange={handleChange}
               required
               autoComplete="off"
-              pattern="[a-zA-Z0-9]{3,20}" // Example: Only alphanumeric, 3-20 characters
+              pattern="[a-zA-Z0-9]{3,20}"
             />
           </div>
           <div>
@@ -113,13 +127,13 @@ const AuthForm: React.FC = () => {
               required
             />
           </div>
-          <button type="submit">{isLogin ? "Login" : "Register"}</button>
+          <button type="submit">{isLogin ? "Login" : "Register"}{loading && <ImSpinner11 className="spinner" />}</button>
         </form>
-        {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Display error message */}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <div className="auth-form__switch">
           {isLogin ? "Don't have an account?" : "Already have an account?"}
-          <div className="login-switch" onClick={toggleForm}>
-            {isLogin ? "Register" : "Login"}
+          <div>
+            <span className="login-switch" onClick={toggleForm}>{isLogin ? "Register" : "Login"}</span>
           </div>
         </div>
       </div>
