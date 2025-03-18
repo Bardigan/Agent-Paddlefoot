@@ -1,8 +1,7 @@
 import React, { createContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
-// 30s max per stage
-// logout btn
 // secure registration input
+// show error message on login/register
 
 interface GameContextType {
   level: number;
@@ -64,6 +63,9 @@ export const GameContextProvider: React.FC<DummyProviderProps> = ({ children }) 
 
   const logoutHandler = useCallback(() => {
     setToken(null);
+    setLevel(1);
+    setScore(0);
+    setGameStatus(null);
     localStorage.removeItem("token");
     localStorage.removeItem("expirationTime");
     

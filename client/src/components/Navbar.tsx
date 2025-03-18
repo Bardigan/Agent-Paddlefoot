@@ -97,6 +97,7 @@ export default function Navbar() {
         <span className="navbar__score">
           Score: <span className="navbar__vt">{context?.score}</span>
         </span>
+        <button onClick={() => context?.logout()} className="outlinedBtn">Logout</button>
       </nav>
     </div>
   );
