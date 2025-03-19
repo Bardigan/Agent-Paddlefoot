@@ -10,7 +10,7 @@ export default function Navbar() {
   const [bestScore, setBestScore] = useState(0);
   const [finalTimerResult, setFinalTimerResult] = useState<number | null>(null);
 
-  const initialId = import.meta.env.INITIAL_BEST_ID;
+  const initialId = import.meta.env.VITE_INITIAL_BEST_ID;
 
   const { data, loadingGet, errorGet, getData } = useGetData(
     initialId,
