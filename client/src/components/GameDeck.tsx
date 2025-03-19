@@ -50,8 +50,8 @@ const generateWalls = (): Wall[] => {
       if (attempts > MAX_WALL_GENERATION_ATTEMPTS) {
         break;
       }
-      width = Math.max(width, 50); // Ensure minimum width is 50px
-      height = Math.max(height, 50); // Ensure minimum height is 50px
+      width = Math.ceil((Math.random() * (windowWidth / 5)) / 50) * 50; // Width in multiples of 50px
+      height = Math.ceil((Math.random() * (windowHeight / 5)) / 50) * 50; // Height in multiples of 50px
       left = Math.random() * (windowWidth - width);
       top = Math.random() * (windowHeight - height - 60);
       attempts++;
