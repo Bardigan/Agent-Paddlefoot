@@ -1,8 +1,5 @@
 import React, { createContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
-// spinner
-// info bubble
-
 interface GameContextType {
   level: number;
   setLevel: (value: number) => void;

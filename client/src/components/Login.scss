@@ -4,10 +4,6 @@
     align-items: center;
     height: 100vh;
     background-image: linear-gradient(#000000, #009688);
-
-    .auth-form__switch {
-        margin-top: 10px;
-    }
   
     .auth-form {
       background-color: #ffffff;
@@ -37,11 +33,6 @@
         border-radius: 4px;
         font-size: 1rem;
         box-sizing: border-box;
-      }
-
-      .login-switch {
-        color: #000000;
-        cursor: pointer;
       }
   
       button {
@@ -121,7 +112,7 @@
   font-size: 0.875rem;
   white-space: normal;
   width: 350px;
-  opacity: 0;
+  opacity: 1;
   visibility: hidden;
   transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
   z-index: 10;
@@ -143,17 +134,3 @@
   visibility: visible;
 }
 
-.spinner {
-  margin-left: 10px;
-  position: absolute;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import "./GameDeck.scss";
 import { GameContext } from '../context/GameContext';
-
+import Popup from "../lib/Popup";
 
 const PLAYER_SPEED = 5; // Player movement speed
 const ENEMY_SPEED = 10; // Enemy movement speed (twice as fast)
@@ -50,8 +50,6 @@ const generateWalls = (): Wall[] => {
       if (attempts > MAX_WALL_GENERATION_ATTEMPTS) {
         break;
       }
-      width = Math.ceil((Math.random() * (windowWidth / 5)) / 50) * 50; // Width in multiples of 50px
-      height = Math.ceil((Math.random() * (windowHeight / 5)) / 50) * 50; // Height in multiples of 50px
       width = Math.max(width, 50); // Ensure minimum width is 50px
       height = Math.max(height, 50); // Ensure minimum height is 50px
       left = Math.random() * (windowWidth - width);
@@ -199,7 +197,7 @@ const generateCoins = (
 
   for (let i = 0; i < numCoins; i++) {
     let left: number = 0,
-      top: number = 0; // Initialize variables
+      top: number = 0;
     let attempts = 0;
     do {
       if (attempts > MAX_SPAWN_ATTEMPTS) {
@@ -277,10 +275,6 @@ const PlatformerGame: React.FC = () => {
           prev.top + PLAYER_SPEED,
           window.innerHeight - 60 - 50
         );
-
-      if (checkWallCollision(newLeft, newTop, 40, 50, walls)) {
-        return prev; // Bounce back if collision detected
-      }
 
       return { left: newLeft, top: newTop };
     });
@@ -366,8 +360,8 @@ const PlatformerGame: React.FC = () => {
     setDoor(null);
     setPlayerPos({ left: 90, top: 220 });
     setWalls(generateWalls()); // Regenerate walls
-    setEnemies(generateEnemies(10, 5, walls, { left: 90, top: 220 })); // Limit the number of enemies to 10
-    setCoins(generateCoins(NUM_COINS, walls, enemies, { left: 90, top: 220 })); // Generate coins
+    setEnemies(generateEnemies(10, 5, walls, { left: 90, top: 220 }));
+    setCoins(generateCoins(NUM_COINS, walls, enemies, { left: 90, top: 220 }));
 
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
@@ -441,8 +435,8 @@ const PlatformerGame: React.FC = () => {
 
   useEffect(() => {
     if (walls.length > 0) {
-      setEnemies(generateEnemies(10, 1, walls, { left: 90, top: 220 })); // 10 normal enemies and 5 doctor enemies
-      setCoins(generateCoins(NUM_COINS, walls, enemies, { left: 90, top: 220 })); // Generate coins
+      setEnemies(generateEnemies(10, 1, walls, { left: 90, top: 220 }));
+      setCoins(generateCoins(NUM_COINS, walls, enemies, { left: 90, top: 220 }));
     }
   }, [walls]);
 
@@ -548,7 +542,7 @@ const PlatformerGame: React.FC = () => {
   return (
     <div className="platformer-game">
       <div
-        className={`player`}
+        className="player"
         style={{ left: `${playerPos.left}px`, top: `${playerPos.top}px` }}
       ></div>
       {enemies.map((enemy, index) => (
@@ -583,15 +577,7 @@ const PlatformerGame: React.FC = () => {
           style={{ left: `${door.left}px`, top: `${door.top}px`, width: '50px', height: '50px' }}
         ></div>
       )}
-      {showPopup && (
-        <div className="popup">
-          <div className="popup-content">
-            <h1>Game Over!</h1>
-            <button onClick={handleClosePopup}>Close</button>
-          </div>
-        </div>
-      )}
-
+      <Popup show={showPopup} onClose={handleClosePopup} title="Game Over" />
       {!gameIsStarted && (
         <div className="initial-message">
           <span className={`forCarrot`}>
