@@ -1,14 +1,30 @@
 .spinner {
-    margin-left: 10px;
-    position: absolute;
-    animation: spin 1s linear infinite;
+  margin-left: 10px;
+  position: absolute;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  to {
+    transform: rotate(360deg);
   }
+}
+
+.outlinedBtn {
+  border-radius: 8px;
+  border: 1px solid #f9f9f9;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  color: #f9f9f9;
+}
+.outlinedBtn:focus {
+  outline: 1px solid #f9f9f9;
+}

@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { GameContext } from '../context/GameContext';
-import { useGetData, useUpdateData } from '../api/Api';
-import './Navbar.scss';
+import { GameContext } from "../context/GameContext";
+import { useGetData, useUpdateData } from "../api/Api";
+import "./Navbar.scss";
+import Button from "../lib/Button";
 
 export default function Navbar() {
   const context = useContext(GameContext);
@@ -9,20 +10,17 @@ export default function Navbar() {
   const [bestScore, setBestScore] = useState(0);
   const [finalTimerResult, setFinalTimerResult] = useState<number | null>(null);
 
-  const initialId = '67c8881551d111d53dd71c90';
+  const initialId = import.meta.env.INITIAL_BEST_ID;
 
-  const {
-    data,
-    loadingGet,
-    errorGet,
-    getData,
-  } = useGetData(initialId, localStorage.getItem('token')? localStorage.getItem('token') : null);
+  const { data, loadingGet, errorGet, getData } = useGetData(
+    initialId,
+    localStorage.getItem("token") ? localStorage.getItem("token") : null
+  );
 
-  const {
-    loadingUpdate,
-    errorUpdate,
-    updateData,
-  } = useUpdateData(initialId, localStorage.getItem('token')? localStorage.getItem('token') : null);
+  const { loadingUpdate, errorUpdate, updateData } = useUpdateData(
+    initialId,
+    localStorage.getItem("token") ? localStorage.getItem("token") : null
+  );
 
   useEffect(() => {
     getData();
@@ -63,7 +61,7 @@ export default function Navbar() {
       // game started
       setFinalTimerResult(null);
       interval = setInterval(() => {
-        setTimer(prevTimer => prevTimer + 10);
+        setTimer((prevTimer) => prevTimer + 10);
       }, 10);
     } else if (context?.gameStatus === false) {
       // game over and paused
@@ -82,22 +80,38 @@ export default function Navbar() {
   const formatTime = (time: number) => {
     const seconds = Math.floor(time / 1000);
     const milliseconds = time % 1000;
-    return `${seconds}.${milliseconds.toString().padStart(3, '0')}s`;
+    return `${seconds}.${milliseconds.toString().padStart(3, "0")}s`;
   };
 
   return (
     <div className="navbar">
       <nav className="navbar__container">
         <div className="navbar__timer">
-          Timer: <span className="navbar__vt">{finalTimerResult !== null ? formatTime(finalTimerResult) : formatTime(timer)}</span>
+          Timer:{" "}
+          <span
+            className={`navbar__vt ${
+              timer > 25000
+                ? "navbar__vt--red"
+                : timer > 15000
+                ? "navbar__vt--yellow"
+                : ""
+            }`}
+          >
+            {finalTimerResult !== null
+              ? formatTime(finalTimerResult)
+              : formatTime(timer)}
+          </span>
         </div>
         <span className="navbar__score">
-          Best score: <span className="navbar__vt">{loadingGet ? "...loading" : bestScore}</span>
+          Best score:{" "}
+          <span className="navbar__vt">
+            {loadingGet ? "...loading" : bestScore}
+          </span>
         </span>
         <span className="navbar__score">
           Score: <span className="navbar__vt">{context?.score}</span>
         </span>
-        <button onClick={() => context?.logout()} className="outlinedBtn">Logout</button>
+        <Button text="Logout" onClick={() => context?.logout()} className="outlinedBtn" />
       </nav>
     </div>
   );

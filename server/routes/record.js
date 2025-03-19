@@ -20,12 +20,27 @@ router.get("/", async (req, res) => {
 
 // This section will help you get a single record by id
 router.get("/:id", async (req, res) => {
-  let collection = await db.collection("scores");
-  let query = { _id: new ObjectId(req.params.id) };
-  let result = await collection.findOne(query);
+  try {
+    const id = req.params.id;
 
-  if (!result) res.send("Not found").status(404);
-  else res.send(result).status(200);
+    // Validate if the id is a valid ObjectId
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).send("Invalid ID format");
+    }
+
+    let collection = await db.collection("scores");
+    let query = { _id: new ObjectId(id) };
+    let result = await collection.findOne(query);
+
+    if (!result) {
+      res.status(404).send("Not found");
+    } else {
+      res.status(200).send(result);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error retrieving record");
+  }
 });
 
 // This section will help you create a new record.
