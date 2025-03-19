@@ -52,6 +52,8 @@ const generateWalls = (): Wall[] => {
       }
       width = Math.ceil((Math.random() * (windowWidth / 5)) / 50) * 50; // Width in multiples of 50px
       height = Math.ceil((Math.random() * (windowHeight / 5)) / 50) * 50; // Height in multiples of 50px
+      width = Math.max(width, 50); // Ensure minimum width is 50px
+      height = Math.max(height, 50); // Ensure minimum height is 50px
       left = Math.random() * (windowWidth - width);
       top = Math.random() * (windowHeight - height - 60);
       attempts++;
@@ -275,6 +277,10 @@ const PlatformerGame: React.FC = () => {
           prev.top + PLAYER_SPEED,
           window.innerHeight - 60 - 50
         );
+
+      if (checkWallCollision(newLeft, newTop, 40, 50, walls)) {
+        return prev; // If collision detected, don't move
+      }
 
       return { left: newLeft, top: newTop };
     });
