@@ -34,6 +34,24 @@
         font-size: 1rem;
         box-sizing: border-box;
       }
+
+      .login-switch {
+        width: fit-content;
+        color:#000000;
+        margin: 0 auto;
+        background-color: transparent;
+        border: none;
+      }
+      .login-switch:hover {
+        color: #333333;
+        background-color: transparent;
+      }
+
+      .login-switch:focus {
+        border: none;
+        outline: none;
+        color: #686868;
+      }
   
       button {
         width: 100%;

@@ -4,6 +4,11 @@ import { useGetData, useUpdateData } from "../api/Api";
 import "./Navbar.scss";
 import Button from "../lib/Button";
 
+// color theme switcher
+// outlined btn
+// score board
+// mobile adoptation
+
 export default function Navbar() {
   const context = useContext(GameContext);
   const [timer, setTimer] = useState(0);

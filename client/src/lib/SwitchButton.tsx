@@ -12,9 +12,9 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ description, title, toggleF
     <div className="auth-form__switch">
       {description}
       <div>
-        <span className="login-switch" onClick={toggleForm}>
+        <button className="login-switch" onClick={toggleForm}>
           {title}
-        </span>
+        </button>
       </div>
     </div>
   );

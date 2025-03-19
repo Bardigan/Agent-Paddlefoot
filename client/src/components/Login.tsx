@@ -43,7 +43,7 @@ const AuthForm: React.FC = () => {
     password: "",
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // State for loading spinner
+  const [loading, setLoading] = useState<boolean>(false);
   const context = useContext(GameContext);
   const navigate = useNavigate();
 
