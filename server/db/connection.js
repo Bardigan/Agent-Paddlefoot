@@ -10,6 +10,8 @@ const client = new MongoClient(URI, {
     strict: true,
     deprecationErrors: true,
   },
+  // Explicitly ensure useBigInt64 is not enabled
+  useBigInt64: false,
 });
 
 try {
