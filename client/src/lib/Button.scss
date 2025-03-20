@@ -24,6 +24,10 @@
   cursor: pointer;
   transition: border-color 0.25s;
   color: #f9f9f9;
+  margin: 0px 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .outlinedBtn:focus {
   outline: 1px solid #f9f9f9;

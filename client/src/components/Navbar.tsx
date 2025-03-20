@@ -4,6 +4,7 @@ import { useGetData, useUpdateData } from "../api/Api";
 import "./Navbar.scss";
 import Button from "../lib/Button";
 import { PiPaintBrushBroadFill } from "react-icons/pi";
+import { MdOutlineExitToApp } from "react-icons/md";
 
 // score board
 // mobile adoptation
@@ -91,6 +92,7 @@ export default function Navbar() {
     <div className="navbar">
       <nav className="navbar__container">
         <div className="navbar__timer">
+          <span className="navbar__timer--text">Time: </span>
           <span
             className={`navbar__vt ${
               timer > 25000
@@ -114,8 +116,10 @@ export default function Navbar() {
         <span className="navbar__score">
           Score: <span className="navbar__vt">{context?.score}</span>
         </span>
-        <Button icon={<PiPaintBrushBroadFill />} onClick={() => context?.setColorMode(!context.colorMode)} className="outlinedBtn" />
-        <Button text="Logout" onClick={() => context?.logout()} className="outlinedBtn" />
+        <span>
+          <Button icon={<PiPaintBrushBroadFill />} onClick={() => context?.setColorMode(!context.colorMode)} className="outlinedBtn" />
+          <Button icon={<MdOutlineExitToApp />} onClick={() => context?.logout()} className="outlinedBtn" />
+        </span>
       </nav>
     </div>
   );
