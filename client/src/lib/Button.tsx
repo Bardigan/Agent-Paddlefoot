@@ -8,6 +8,7 @@ interface ButtonProps {
   onClick?: () => void;
   className?: string;
   text?: string;
+  icon?: React.ReactNode;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -15,7 +16,8 @@ const Button: React.FC<ButtonProps> = ({
   loading = false,
   onClick,
   className = "",
-  text = ""
+  text = "",
+  icon
 }) => {
   return (
     <button
@@ -25,6 +27,7 @@ const Button: React.FC<ButtonProps> = ({
       disabled={loading}
     >
       {text}
+      {icon? icon : ""}
       {loading && <ImSpinner11 className="spinner" />}
     </button>
   );

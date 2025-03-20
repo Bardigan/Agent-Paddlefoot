@@ -3,9 +3,8 @@ import { GameContext } from "../context/GameContext";
 import { useGetData, useUpdateData } from "../api/Api";
 import "./Navbar.scss";
 import Button from "../lib/Button";
+import { PiPaintBrushBroadFill } from "react-icons/pi";
 
-// color theme switcher
-// outlined btn
 // score board
 // mobile adoptation
 
@@ -92,7 +91,6 @@ export default function Navbar() {
     <div className="navbar">
       <nav className="navbar__container">
         <div className="navbar__timer">
-          Timer:{" "}
           <span
             className={`navbar__vt ${
               timer > 25000
@@ -116,6 +114,7 @@ export default function Navbar() {
         <span className="navbar__score">
           Score: <span className="navbar__vt">{context?.score}</span>
         </span>
+        <Button icon={<PiPaintBrushBroadFill />} onClick={() => context?.setColorMode(!context.colorMode)} className="outlinedBtn" />
         <Button text="Logout" onClick={() => context?.logout()} className="outlinedBtn" />
       </nav>
     </div>

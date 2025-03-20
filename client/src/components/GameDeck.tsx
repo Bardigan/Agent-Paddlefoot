@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import "./GameDeck.scss";
-import { GameContext } from '../context/GameContext';
+import { GameContext } from "../context/GameContext";
 import Popup from "../lib/Popup";
 
 const PLAYER_SPEED = 5; // Player movement speed
@@ -27,7 +27,7 @@ interface Position {
 interface Enemy extends Position {
   direction: number;
   steps: number;
-  type: 'normal' | 'doctor';
+  type: "normal" | "doctor";
 }
 
 interface Coin extends Position {}
@@ -147,12 +147,12 @@ const generateEnemies = (
   const windowHeight = window.innerHeight;
   const playerSafeRadius = 100;
 
-  const generateEnemy = (type: 'normal' | 'doctor') => {
+  const generateEnemy = (type: "normal" | "doctor") => {
     let left: number = 0,
       top: number = 0;
     let attempts = 0;
-    const width = type === 'doctor' ? 40 : 50;
-    const height = type === 'doctor' ? 80 : 50;
+    const width = type === "doctor" ? 40 : 50;
+    const height = type === "doctor" ? 80 : 50;
 
     do {
       if (attempts > MAX_SPAWN_ATTEMPTS) {
@@ -176,11 +176,11 @@ const generateEnemies = (
   };
 
   for (let i = 0; i < numEnemies; i++) {
-    generateEnemy('normal');
+    generateEnemy("normal");
   }
 
   for (let i = 0; i < numDoctors; i++) {
-    generateEnemy('doctor');
+    generateEnemy("doctor");
   }
 
   return enemies;
@@ -246,7 +246,7 @@ const PlatformerGame: React.FC = () => {
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
   const context = useContext(GameContext);
-  
+
   const handleKeyDown = (event: KeyboardEvent) => {
     !gameIsStarted && setGameIsStarted(true);
     !gameIsStarted && !context?.gameStatus && context?.setGameStatus(true);
@@ -302,17 +302,28 @@ const PlatformerGame: React.FC = () => {
         // Check if the new direction would cause a collision with a wall
         let potentialTop = newTop;
         let potentialLeft = newLeft;
-        const enemyWidth = enemy.type === 'doctor' ? 40 : 50;
-        const enemyHeight = enemy.type === 'doctor' ? 80 : 50;
+        const enemyWidth = enemy.type === "doctor" ? 40 : 50;
+        const enemyHeight = enemy.type === "doctor" ? 80 : 50;
         const level = context?.level ? context?.level : 1;
-        const enemySpeed = enemy.type === 'doctor' ? (ENEMY_SPEED * 4) * level : ENEMY_SPEED * level;
+        const enemySpeed =
+          enemy.type === "doctor"
+            ? ENEMY_SPEED * 4 * level
+            : ENEMY_SPEED * level;
 
         if (newDirection === 0) potentialTop -= enemySpeed; // up
         if (newDirection === 1) potentialTop += enemySpeed; // down
         if (newDirection === 2) potentialLeft -= enemySpeed; // left
         if (newDirection === 3) potentialLeft += enemySpeed; // right
 
-        if (checkWallCollision(potentialLeft, potentialTop, enemyWidth, enemyHeight, walls)) {
+        if (
+          checkWallCollision(
+            potentialLeft,
+            potentialTop,
+            enemyWidth,
+            enemyHeight,
+            walls
+          )
+        ) {
           // If collision detected, reverse direction
           newDirection = (newDirection + 2) % 4;
           potentialTop = newTop;
@@ -323,7 +334,15 @@ const PlatformerGame: React.FC = () => {
           if (newDirection === 3) potentialLeft += enemySpeed; // right
 
           // If reversing direction also causes a collision, choose a new random direction
-          if (checkWallCollision(potentialLeft, potentialTop, enemyWidth, enemyHeight, walls)) {
+          if (
+            checkWallCollision(
+              potentialLeft,
+              potentialTop,
+              enemyWidth,
+              enemyHeight,
+              walls
+            )
+          ) {
             let attempts = 0;
             do {
               newDirection = Math.floor(Math.random() * 4);
@@ -335,7 +354,13 @@ const PlatformerGame: React.FC = () => {
               if (newDirection === 3) potentialLeft += enemySpeed; // right
               attempts++;
             } while (
-              checkWallCollision(potentialLeft, potentialTop, enemyWidth, enemyHeight, walls) &&
+              checkWallCollision(
+                potentialLeft,
+                potentialTop,
+                enemyWidth,
+                enemyHeight,
+                walls
+              ) &&
               attempts < 4
             );
           }
@@ -346,8 +371,14 @@ const PlatformerGame: React.FC = () => {
         newLeft = potentialLeft;
 
         // Ensure enemies stay within the screen
-        newTop = Math.max(0, Math.min(newTop, window.innerHeight - 60 - enemyHeight));
-        newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - enemyWidth));
+        newTop = Math.max(
+          0,
+          Math.min(newTop, window.innerHeight - 60 - enemyHeight)
+        );
+        newLeft = Math.max(
+          0,
+          Math.min(newLeft, window.innerWidth - enemyWidth)
+        );
 
         return {
           ...enemy,
@@ -411,18 +442,18 @@ const PlatformerGame: React.FC = () => {
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current); // Stop the game loop
     }
-  }
+  };
 
   useEffect(() => {
     if (context?.gameStatus === false) {
       handlePlayerLost();
-    } 
+    }
   }, [context?.gameStatus]);
 
   useEffect(() => {
     enemies.forEach((enemy) => {
-      const enemyWidth = enemy.type === 'doctor' ? 40 : 50;
-      const enemyHeight = enemy.type === 'doctor' ? 80 : 50;
+      const enemyWidth = enemy.type === "doctor" ? 40 : 50;
+      const enemyHeight = enemy.type === "doctor" ? 80 : 50;
       if (
         playerPos.left < enemy.left + enemyWidth &&
         playerPos.left + 40 > enemy.left &&
@@ -442,7 +473,9 @@ const PlatformerGame: React.FC = () => {
   useEffect(() => {
     if (walls.length > 0) {
       setEnemies(generateEnemies(10, 1, walls, { left: 90, top: 220 }));
-      setCoins(generateCoins(NUM_COINS, walls, enemies, { left: 90, top: 220 }));
+      setCoins(
+        generateCoins(NUM_COINS, walls, enemies, { left: 90, top: 220 })
+      );
     }
   }, [walls]);
 
@@ -469,9 +502,9 @@ const PlatformerGame: React.FC = () => {
           playerPos.left + 40 > coin.left &&
           playerPos.top < coin.top + 40 &&
           playerPos.top + 50 > coin.top;
-          if (isColliding) {
-            setScoreIncrement((prev) => prev + 1);
-          }
+        if (isColliding) {
+          setScoreIncrement((prev) => prev + 1);
+        }
         return !isColliding;
       })
     );
@@ -489,7 +522,8 @@ const PlatformerGame: React.FC = () => {
       // Spawn the door at a random position
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-      let doorLeft:number = 0, doorTop: number = 0;
+      let doorLeft: number = 0,
+        doorTop: number = 0;
       let attempts = 0;
       const doorSize = 50;
 
@@ -504,9 +538,9 @@ const PlatformerGame: React.FC = () => {
         checkWallCollision(doorLeft, doorTop, doorSize, doorSize, walls) ||
         enemies.some(
           (enemy) =>
-            doorLeft < enemy.left + (enemy.type === 'doctor' ? 40 : 50) &&
+            doorLeft < enemy.left + (enemy.type === "doctor" ? 40 : 50) &&
             doorLeft + doorSize > enemy.left &&
-            doorTop < enemy.top + (enemy.type === 'doctor' ? 80 : 50) &&
+            doorTop < enemy.top + (enemy.type === "doctor" ? 80 : 50) &&
             doorTop + doorSize > enemy.top
         ) ||
         (doorLeft < playerPos.left + 40 &&
@@ -514,7 +548,7 @@ const PlatformerGame: React.FC = () => {
           doorTop < playerPos.top + 50 &&
           doorTop + doorSize > playerPos.top)
       );
-    
+
       setDoor({ left: doorLeft, top: doorTop });
     }
   }, [coins, door, walls, enemies, playerPos]);
@@ -545,54 +579,73 @@ const PlatformerGame: React.FC = () => {
     setScoreIncrement(0);
   };
 
+  const ifColorDoctor = (type: string) => {
+    if (type === "doctor" && context?.colorMode) {
+      return "doctor";
+    } else if (type === "doctor" && !context?.colorMode) {
+      return "doctorC";
+    } else {
+      return "normal";
+    }
+  };
+
   return (
-    <div className="platformer-game">
-      <div
-        className="player"
-        style={{ left: `${playerPos.left}px`, top: `${playerPos.top}px` }}
-      ></div>
-      {enemies.map((enemy, index) => (
+    <div
+      className={context?.colorMode ? "platformer-gameWrp" : "platformer-gameWrpC"}
+    >
+      <div className="platformer-game">
         <div
-          key={index}
-          className={`enemy ${enemy.type}`}
-          style={{ left: `${enemy.left}px`, top: `${enemy.top}px` }}
+          className={context?.colorMode ? "player" : "playerC"}
+          style={{ left: `${playerPos.left}px`, top: `${playerPos.top}px` }}
         ></div>
-      ))}
-      {walls.map((wall, index) => (
-        <div
-          key={index}
-          className="wall"
-          style={{
-            left: `${wall.left}px`,
-            top: `${wall.top}px`,
-            width: `${wall.width}px`,
-            height: `${wall.height}px`,
-          }}
-        ></div>
-      ))}
-      {coins.map((coin, index) => (
-        <div
-          key={index}
-          className="coin"
-          style={{ left: `${coin.left}px`, top: `${coin.top}px` }}
-        ></div>
-      ))}
-      {door && (
-        <div
-          className="door"
-          style={{ left: `${door.left}px`, top: `${door.top}px`, width: '50px', height: '50px' }}
-        ></div>
-      )}
-      <Popup show={showPopup} onClose={handleClosePopup} title="Game Over" />
-      {!gameIsStarted && (
-        <div className="initial-message">
-          <span className={`forCarrot`}>
-            <span className={`${!gameIsStarted && `blinking`}`}>
-              Press arrows to move. Avoid the enemies!
+        {enemies.map((enemy, index) => (
+          <div
+            key={index}
+            className={`enemy ${ifColorDoctor(enemy.type)}`}
+            style={{ left: `${enemy.left}px`, top: `${enemy.top}px` }}
+          ></div>
+        ))}
+        {walls.map((wall, index) => (
+          <div
+            key={index}
+            className={context?.colorMode ? "wall" : "wallC"}
+            style={{
+              left: `${wall.left}px`,
+              top: `${wall.top}px`,
+              width: `${wall.width}px`,
+              height: `${wall.height}px`,
+            }}
+          ></div>
+        ))}
+        {coins.map((coin, index) => (
+          <div
+            key={index}
+            className="coin"
+            style={{ left: `${coin.left}px`, top: `${coin.top}px` }}
+          ></div>
+        ))}
+        {door && (
+          <div
+            className="door"
+            style={{
+              left: `${door.left}px`,
+              top: `${door.top}px`,
+              width: "50px",
+              height: "50px",
+            }}
+          ></div>
+        )}
+        <Popup show={showPopup} onClose={handleClosePopup} title="Game Over" />
+        {!gameIsStarted && (
+          <div className="initial-message">
+            <span className={`forCarrot`}>
+              <span className={`${!gameIsStarted && `blinking`}`}>
+                Press arrows to move. Avoid the enemies!
+              </span>
             </span>
-          </span>
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import React, { createContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
 interface GameContextType {
+  colorMode: boolean;
+  setColorMode: (value: boolean) => void;
   level: number;
   setLevel: (value: number) => void;
   score: number;
@@ -38,7 +40,6 @@ const retriveStoredToken = () => {
     localStorage.removeItem("expirationTime");
     return null;
   }
-  // if we pass all the checks it means the token is still good enough
 
   return {
     token: storedToken,
@@ -46,8 +47,18 @@ const retriveStoredToken = () => {
   };
 };
 
+const retriveColorMode = () => {
+  const storedColorMode = localStorage.getItem("colorMode");
+  if (storedColorMode === "true") {
+    return true;
+  }
+  return false;
+}
+
 export const GameContextProvider: React.FC<DummyProviderProps> = ({ children }) => {
   const tokenData = useMemo(() => retriveStoredToken(), []);
+  const colorModeData = useMemo(() => retriveColorMode(), []);
+
   let initialToken = null;
 
   if (tokenData) {
@@ -55,6 +66,7 @@ export const GameContextProvider: React.FC<DummyProviderProps> = ({ children }) 
   }
   const [level, setLevel] = useState<number>(1);
   const [score, setScore] = useState<number>(0);
+  const [colorMode, setColorMode] = useState<boolean>(colorModeData);
   const [gameStatus, setGameStatus] = useState<boolean | null>(null);
   const [token, setToken] = useState<string | null>(initialToken);
 
@@ -87,6 +99,11 @@ export const GameContextProvider: React.FC<DummyProviderProps> = ({ children }) 
     logoutTimer = setTimeout(logoutHandler, remainingTime);
   };
 
+  const setColorModeHandler = (value: boolean) => {
+    setColorMode(value);
+    localStorage.setItem("colorMode", value.toString());
+  }
+
   const customValues = {
     score,
     setScore,
@@ -97,7 +114,9 @@ export const GameContextProvider: React.FC<DummyProviderProps> = ({ children }) 
     token,
     setToken,
     level,
-    setLevel
+    setLevel,
+    colorMode,
+    setColorMode: setColorModeHandler,
   }
 
   return (
