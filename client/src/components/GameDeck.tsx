@@ -3,7 +3,7 @@ import "./GameDeck.scss";
 import { GameContext } from "../context/GameContext";
 import Popup from "../lib/Popup";
 
-const PLAYER_SPEED = 3; // Player movement speed
+const PLAYER_SPEED = 5; // Player movement speed
 const ENEMY_SPEED = 10; // Enemy movement speed (twice as fast)
 const ENEMY_MOVE_INTERVAL = 250; // Enemy move interval in milliseconds (twice as fast)
 const ENEMY_STEPS_BEFORE_CHANGE = 5; // Number of steps before changing direction
