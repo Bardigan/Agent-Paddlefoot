@@ -68,8 +68,9 @@ app.post(
       } else {
         res.status(401).json({ message: "Invalid username or password" });
       }
-    } finally {
-      //await client.close();
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 );

@@ -20,7 +20,7 @@
 
   &__vt {
     font-family: VT323;
-    font-size: 28px;
+    //font-size: 28px;
   }
 
   &__vt--red {
@@ -34,12 +34,30 @@
   &__timer {
     color: #fff;
     font-size: 24px;
+  }
+
+
+
+  &__best-score {
+    border-radius: 4px;
+    border: 1px solid #f9f9f9;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: rgba(26, 26, 26, 0);
     cursor: pointer;
+    transition: border-color 0.25s;
+    color: #f9f9f9;
+    margin: 0px 2px;
+    display: inline-flex
+;
+    align-items: center;
+    justify-content: center;
   }
 
   &__score {
     color: #fff;
     font-size: 24px;
-    cursor: pointer;
   }
 }

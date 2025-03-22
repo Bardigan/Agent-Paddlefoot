@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import "./Popup.scss";
 
 interface PopupProps {
@@ -11,14 +12,17 @@ interface PopupProps {
 const Popup: React.FC<PopupProps> = ({ show, onClose, title = "Popup", children }) => {
   if (!show) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div className="popup">
       <div className="popup-content">
         <h1>{title}</h1>
-        {children}
+        <div className="popup-children-content">
+          {children}
+        </div>
         <button onClick={onClose}>Close</button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

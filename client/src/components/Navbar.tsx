@@ -1,41 +1,35 @@
 import { useContext, useEffect, useState } from "react";
 import { GameContext } from "../context/GameContext";
-import { useGetData, useUpdateData } from "../api/Api";
-import "./Navbar.scss";
+import {
+  useSubmitScore,
+  useGetBestScore,
+  useGetAllBestScores,
+} from "../api/Api";
 import Button from "../lib/Button";
-import { PiPaintBrushBroadFill } from "react-icons/pi";
-import { MdOutlineExitToApp } from "react-icons/md";
-
-// score board
-// mobile adoptation
+import Popup from "../lib/Popup";
+import "./Navbar.scss";
 
 export default function Navbar() {
   const context = useContext(GameContext);
+  const [showPopup, setShowPopup] = useState(false);
   const [timer, setTimer] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [finalTimerResult, setFinalTimerResult] = useState<number | null>(null);
 
-  const initialId = import.meta.env.VITE_INITIAL_BEST_ID;
+  const token = localStorage.getItem("token") || null;
 
-  const { data, loadingGet, errorGet, getData } = useGetData(
-    initialId,
-    localStorage.getItem("token") ? localStorage.getItem("token") : null
-  );
-
-  const { loadingUpdate, errorUpdate, updateData } = useUpdateData(
-    initialId,
-    localStorage.getItem("token") ? localStorage.getItem("token") : null
-  );
+  const {
+    data,
+    loading: loadingBestScore,
+    error: errorBestScore,
+    getBestScore,
+  } = useGetBestScore(token);
+  const { data: bestScoreData, getAllBestScores } = useGetAllBestScores(token);
+  const { mutate: submitScoreMutate } = useSubmitScore(token);
 
   useEffect(() => {
-    getData();
+    getBestScore();
   }, []);
-
-  useEffect(() => {
-    if (loadingUpdate !== null && !errorUpdate) {
-      getData();
-    }
-  }, [loadingUpdate]);
 
   useEffect(() => {
     if (timer < 30000) {
@@ -50,38 +44,53 @@ export default function Navbar() {
     }
   }, [timer]);
 
+  // Update the best score when the game ends or the score changes
   useEffect(() => {
-    if (data !== null && errorGet === null && !loadingGet) {
-      if (context?.score && Number(context.score) > Number(data.score)) {
-        updateData(initialId, context?.score);
+    if (data && !errorBestScore && !loadingBestScore) {
+      const serverBestScore = data.bestScore || 0;
+
+      if (context?.score && context.score > serverBestScore) {
+        // Update the best score on the server
+        setBestScore(context.score);
       } else {
-        setBestScore(data.score);
+        setBestScore(serverBestScore);
       }
     }
-  }, [data]);
+  }, [data, context?.score]);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
     if (context?.gameStatus === true) {
-      // game started
+      // Game started
       setFinalTimerResult(null);
       interval = setInterval(() => {
         setTimer((prevTimer) => prevTimer + 10);
       }, 10);
     } else if (context?.gameStatus === false) {
-      // game over and paused
-      getData();
+      // Game over
       setFinalTimerResult(timer);
       setTimer(0);
+      // Submit the final score to the server and fetch the best score afterward
+      if (context?.gameStatus === false && context?.score) {
+        submitScoreMutate(context.score, {
+          onSuccess: () => {
+            getBestScore(); // Fetch the updated best score
+          },
+          onError: (error) => {
+            console.error("Failed to submit score:", error);
+          },
+        });
+      }
     } else if (context?.gameStatus === null) {
-      // game reset
+      // Game reset
       setFinalTimerResult(null);
       context?.setLevel(1);
       setTimer(0);
     }
     return () => clearInterval(interval);
-  }, [context?.gameStatus]);
+  }, [context?.gameStatus, context?.score]);
 
+  // Format the timer for display
   const formatTime = (time: number) => {
     const seconds = Math.floor(time / 1000);
     const milliseconds = time % 1000;
@@ -90,6 +99,33 @@ export default function Navbar() {
 
   return (
     <div className="navbar">
+      <Popup
+        show={showPopup}
+        onClose={() => setShowPopup(false)}
+        title="The best scores"
+      >
+        <>
+          <h2>Best scores</h2>
+          <table className="popup__table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>The best score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bestScoreData
+                ?.sort((a: any, b: any) => b.bestScore - a.bestScore) // Sort scores in descending order
+                .map((score: any, index: number) => (
+                  <tr key={index}>
+                    <td>{score.username}</td>
+                    <td>{score.bestScore}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </>
+      </Popup>
       <nav className="navbar__container">
         <div className="navbar__timer">
           <span className="navbar__timer--text">Time: </span>
@@ -107,18 +143,30 @@ export default function Navbar() {
               : formatTime(timer)}
           </span>
         </div>
-        <span className="navbar__score">
-          Best score:{" "}
-          <span className="navbar__vt">
-            {loadingGet ? "...loading" : bestScore}
-          </span>
-        </span>
+
+        <Button
+          className="outlinedBtn"
+          children={<>Best score: {loadingBestScore ? "...loading" : " " + bestScore}</>}
+          onClick={() => {
+            setShowPopup(true);
+            getAllBestScores();
+          }}
+        />
+
         <span className="navbar__score">
           Score: <span className="navbar__vt">{context?.score}</span>
         </span>
         <span>
-          <Button icon={<PiPaintBrushBroadFill />} onClick={() => context?.setColorMode(!context.colorMode)} className="outlinedBtn" />
-          <Button icon={<MdOutlineExitToApp />} onClick={() => context?.logout()} className="outlinedBtn" />
+          <Button
+            className="outlinedBtn"
+            text={"Color mode"}
+            onClick={() => context?.setColorMode(!context.colorMode)}
+          />
+          <Button
+            className="outlinedBtn"
+            text={"Exit"}
+            onClick={() => context?.logout()}
+          />
         </span>
       </nav>
     </div>

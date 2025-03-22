@@ -2,28 +2,61 @@ import { useState } from 'react';
 
 const API = import.meta.env.VITE_API_URL || "localhost";
 
-interface ScoreData {
-  id: number;
-  score: number;
-}
+export const useSubmitScore = (token: string | null | undefined) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-interface UseGetDataReturn {
-  data: ScoreData | null;
-  loadingGet: boolean | null;
-  errorGet: string | null;
-  getData: (id?: string) => Promise<void>;
-}
-
-export const useGetData = (initialId: string, token: string | null | undefined): UseGetDataReturn => {
-  const [data, setData] = useState<ScoreData | null>(null);
-  const [loadingGet, setLoadingGet] = useState<boolean | null>(null);
-  const [errorGet, setErrorGet] = useState<string | null>(null);
-
-  const getData = async (id: string = initialId): Promise<void> => {
-    setLoadingGet(true);
-    setErrorGet(null);
+  const mutate = async (
+    score: number,
+    options?: {
+      onSuccess?: () => void;
+      onError?: (error: string) => void;
+    }
+  ): Promise<void> => {
+    setLoading(true);
+    setError(null);
     try {
-      const response = await fetch(`${API}/score/${id}`, {
+      const response = await fetch(`${API}/score`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ score }),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `HTTP error! status: ${response.status}`);
+      }
+      // Call onSuccess callback if provided
+      if (options?.onSuccess) {
+        options.onSuccess();
+      }
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message;
+      setError(errorMessage);
+      // Call onError callback if provided
+      if (options?.onError) {
+        options.onError(errorMessage);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { loading, error, mutate };
+};
+
+export const useGetBestScore = (token: string | null | undefined) => {
+  const [data, setData] = useState<any | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const getBestScore = async (): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API}/score/best`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -31,104 +64,49 @@ export const useGetData = (initialId: string, token: string | null | undefined):
         },
       });
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(errorText || `HTTP error! status: ${response.status}`);
       }
-      const record: ScoreData = await response.json();
-      setData(record);
-    } catch (error: unknown) {
-      setErrorGet((error as Error).message);
+      const result = await response.json();
+      setData(result);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
-      setLoadingGet(false);
+      setLoading(false);
     }
   };
 
-  return {
-    data,
-    loadingGet,
-    errorGet,
-    getData,
-  };
+  return { data, loading, error, getBestScore };
 };
 
-interface UsePostDataReturn {
-  loadingPost: boolean | null;
-  errorPost: string | null;
-  postData: (id?: string, newRecord?: number) => Promise<void>;
-}
+export const useGetAllBestScores = (token: string | null | undefined) => {
+  const [data, setData] = useState<any[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-export const usePostData = (initialId: string, token: string | null | undefined): UsePostDataReturn => {
-  const [loadingPost, setLoadingPost] = useState<boolean | null>(null);
-  const [errorPost, setErrorPost] = useState<string | null>(null);
-
-  const postData = async (id: string = initialId, newRecord?: number): Promise<void> => {
-    setLoadingPost(true);
-    setErrorPost(null);
+  const getAllBestScores = async (): Promise<void> => {
+    setLoading(true);
+    setError(null);
     try {
-      const response = await fetch(`${API}/score/${id}`, {
-        method: 'POST',
+      const response = await fetch(`${API}/score/best/all`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: newRecord !== undefined ? JSON.stringify({ score: newRecord.toString() }) : undefined,
       });
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(errorText || `HTTP error! status: ${response.status}`);
       }
-    } catch (error: unknown) {
-      setErrorPost((error as Error).message);
+      const result = await response.json();
+      setData(result);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
-      setLoadingPost(false);
+      setLoading(false);
     }
   };
 
-  return {
-    loadingPost,
-    errorPost,
-    postData,
-  };
+  return { data, loading, error, getAllBestScores };
 };
-
-interface UseUpdateDataReturn {
-  loadingUpdate: boolean | null;
-  errorUpdate: string | null;
-  updateData: (id?: string, newRecord?: number) => Promise<void>;
-}
-
-export const useUpdateData = (initialId: string, token: string | null | undefined): UseUpdateDataReturn => {
-  const [loadingUpdate, setLoadingUpdate] = useState<boolean | null>(null);
-  const [errorUpdate, setErrorUpdate] = useState<string | null>(null);
-
-  const updateData = async (id: string = initialId, newRecord?: number): Promise<void> => {
-    setLoadingUpdate(true);
-    setErrorUpdate(null);
-    try {
-      const response = await fetch(`${API}/score/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: newRecord !== undefined ? JSON.stringify({ score: newRecord.toString() }) : undefined,
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-    } catch (error: unknown) {
-      setErrorUpdate((error as Error).message);
-    } finally {
-      setLoadingUpdate(false);
-    }
-  };
-
-  return {
-    loadingUpdate,
-    errorUpdate,
-    updateData,
-  };
-};
-
-
-
-
-
