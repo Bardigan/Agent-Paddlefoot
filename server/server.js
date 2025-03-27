@@ -33,7 +33,11 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-app.use(cors());
+app.use(cors({
+  origin: '*', // Allow all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+}));
 app.use(express.json());
 app.use("/score", authenticateToken, records);
 
