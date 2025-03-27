@@ -1,10 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { GameContext } from "../context/GameContext";
-import {
-  useSubmitScore,
-  useGetBestScore,
-  useGetAllBestScores,
-} from "../api/Api";
+import { useSubmitScore, useGetBestScore, useGetAllBestScores } from "../api/Api";
+import { IoMenu } from "react-icons/io5";
+import { RxCross1 } from "react-icons/rx";
 import Button from "../lib/Button";
 import Popup from "../lib/Popup";
 import "./Navbar.scss";
@@ -12,6 +10,7 @@ import "./Navbar.scss";
 export default function Navbar() {
   const context = useContext(GameContext);
   const [showPopup, setShowPopup] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
   const [timer, setTimer] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [finalTimerResult, setFinalTimerResult] = useState<number | null>(null);
@@ -26,6 +25,8 @@ export default function Navbar() {
   } = useGetBestScore(token);
   const { data: bestScoreData, getAllBestScores } = useGetAllBestScores(token);
   const { mutate: submitScoreMutate } = useSubmitScore(token);
+
+  const isMobile = window.innerWidth <= 768; // Check if the device is mobile
 
   useEffect(() => {
     getBestScore();
@@ -44,13 +45,11 @@ export default function Navbar() {
     }
   }, [timer]);
 
-  // Update the best score when the game ends or the score changes
   useEffect(() => {
     if (data && !errorBestScore && !loadingBestScore) {
       const serverBestScore = data.bestScore || 0;
 
       if (context?.score && context.score > serverBestScore) {
-        // Update the best score on the server
         setBestScore(context.score);
       } else {
         setBestScore(serverBestScore);
@@ -61,20 +60,17 @@ export default function Navbar() {
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
     if (context?.gameStatus === true) {
-      // Game started
       setFinalTimerResult(null);
       interval = setInterval(() => {
         setTimer((prevTimer) => prevTimer + 10);
       }, 10);
     } else if (context?.gameStatus === false) {
-      // Game over
       setFinalTimerResult(timer);
       setTimer(0);
-      // Submit the final score to the server and fetch the best score afterward
       if (context?.gameStatus === false && context?.score) {
         submitScoreMutate(context.score, {
           onSuccess: () => {
-            getBestScore(); // Fetch the updated best score
+            getBestScore();
           },
           onError: (error) => {
             console.error("Failed to submit score:", error);
@@ -82,7 +78,6 @@ export default function Navbar() {
         });
       }
     } else if (context?.gameStatus === null) {
-      // Game reset
       setFinalTimerResult(null);
       context?.setLevel(1);
       setTimer(0);
@@ -90,7 +85,6 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, [context?.gameStatus, context?.score]);
 
-  // Format the timer for display
   const formatTime = (time: number) => {
     const seconds = Math.floor(time / 1000);
     const milliseconds = time % 1000;
@@ -104,28 +98,26 @@ export default function Navbar() {
         onClose={() => setShowPopup(false)}
         title="The best scores"
       >
-        <>
-          <h2>Best scores</h2>
-          <table className="popup__table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>The best score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bestScoreData
-                ?.sort((a: any, b: any) => b.bestScore - a.bestScore) // Sort scores in descending order
-                .map((score: any, index: number) => (
-                  <tr key={index}>
-                    <td>{score.username}</td>
-                    <td>{score.bestScore}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </>
+        <table className="popup__table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>The best score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bestScoreData
+              ?.sort((a: any, b: any) => b.bestScore - a.bestScore)
+              .map((score: any, index: number) => (
+                <tr key={index}>
+                  <td>{score.username}</td>
+                  <td>{score.bestScore}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       </Popup>
+
       <nav className="navbar__container">
         <div className="navbar__timer">
           <span className="navbar__timer--text">Time: </span>
@@ -156,19 +148,65 @@ export default function Navbar() {
         <span className="navbar__score">
           Score: <span className="navbar__vt">{context?.score}</span>
         </span>
-        <span>
-          <Button
-            className="outlinedBtn"
-            text={"Color mode"}
-            onClick={() => context?.setColorMode(!context.colorMode)}
+
+        {!isMobile && (
+          <span>
+            <Button
+              className="outlinedBtn"
+              text={"Color mode"}
+              onClick={() => context?.setColorMode(!context.colorMode)}
+            />
+            <Button
+              className="outlinedBtn"
+              text={"Exit"}
+              onClick={() => context?.logout()}
+            />
+          </span>
+        )}
+
+        {isMobile && (
+          <IoMenu
+            className="navbar__menu-icon"
+            onClick={() => setShowSidebar(!showSidebar)}
           />
-          <Button
-            className="outlinedBtn"
-            text={"Exit"}
-            onClick={() => context?.logout()}
-          />
-        </span>
+        )}
       </nav>
+
+      {isMobile && showSidebar && (
+        <div
+          className={`navbar__sidebar ${showSidebar ? "navbar__sidebar--open" : ""}`}
+          onClick={() => setShowSidebar(false)}
+        >
+          <div
+            className="navbar__sidebar-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="navbar__sidebar-close">
+              <Button
+                className="noOutline"
+                onClick={() => setShowSidebar(false)}
+                icon={<RxCross1 />}
+              />
+            </div>
+              <Button
+                className="outlinedBtn"
+                text={"Color mode"}
+                onClick={() => {
+                  context?.setColorMode(!context.colorMode);
+                  setShowSidebar(false);
+                }}
+              />
+            <Button
+              className="outlinedBtn"
+              text={"Exit"}
+              onClick={() => {
+                context?.logout();
+                setShowSidebar(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

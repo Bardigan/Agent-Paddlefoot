@@ -3,6 +3,8 @@ import "./GameDeck.scss";
 import { GameContext } from "../context/GameContext";
 import Popup from "../lib/Popup";
 
+// mobile adaptation
+
 const PLAYER_SPEED = 5; // Player movement speed
 const ENEMY_SPEED = 10; // Enemy movement speed (twice as fast)
 const ENEMY_MOVE_INTERVAL = 250; // Enemy move interval in milliseconds (twice as fast)
@@ -260,6 +262,17 @@ const PlatformerGame: React.FC = () => {
     setPlayerDirection(null);
   };
 
+  // New: Handle touch input for mobile
+  const handleTouchStart = (direction: string) => {
+    setGameIsStarted(true);
+    !context?.gameStatus && context?.setGameStatus(true);
+    setPlayerDirection(direction);
+  };
+
+  const handleTouchEnd = () => {
+    setPlayerDirection(null);
+  };
+
   const movePlayer = () => {
     if (!playerDirection) return;
 
@@ -465,17 +478,19 @@ const PlatformerGame: React.FC = () => {
     });
   }, [playerPos, enemies]);
 
+  const isMobile = window.innerWidth <= 768; // Define a mobile breakpoint
+
   useEffect(() => {
     const generatedWalls = generateWalls();
-    setWalls(generatedWalls);
+    setWalls(isMobile ? generatedWalls.slice(0, Math.ceil(NUM_WALLS / 2)) : generatedWalls); // Half the walls on mobile
   }, []);
 
   useEffect(() => {
     if (walls.length > 0) {
-      setEnemies(generateEnemies(10, 1, walls, { left: 90, top: 220 }));
-      setCoins(
-        generateCoins(NUM_COINS, walls, enemies, { left: 90, top: 220 })
-      );
+      const numEnemies = isMobile ? Math.ceil(10 / 2) : 10; // Half the enemies on mobile
+      const numDoctors = 1;
+      setEnemies(generateEnemies(numEnemies, numDoctors, walls, { left: 90, top: 220 }));
+      setCoins(generateCoins(NUM_COINS, walls, enemies, { left: 90, top: 220 }));
     }
   }, [walls]);
 
@@ -640,11 +655,45 @@ const PlatformerGame: React.FC = () => {
           <div className="initial-message">
             <span className={`forCarrot`}>
               <span className={`${!gameIsStarted && `blinking`}`}>
-                Press arrows to move. Avoid the enemies!
+                Press arrows or use touch controls to move. Avoid the enemies!
               </span>
             </span>
           </div>
         )}
+      </div>
+
+      {/* New: Touch controls for mobile */}
+      <div className="touch-controls">
+        <button
+          className="control-button up"
+          onTouchStart={() => handleTouchStart("up")}
+          onTouchEnd={handleTouchEnd}
+        >
+          ↑
+        </button>
+        <div className="horizontal-controls">
+          <button
+            className="control-button left"
+            onTouchStart={() => handleTouchStart("left")}
+            onTouchEnd={handleTouchEnd}
+          >
+            ←
+          </button>
+          <button
+            className="control-button right"
+            onTouchStart={() => handleTouchStart("right")}
+            onTouchEnd={handleTouchEnd}
+          >
+            →
+          </button>
+        </div>
+        <button
+          className="control-button down"
+          onTouchStart={() => handleTouchStart("down")}
+          onTouchEnd={handleTouchEnd}
+        >
+          ↓
+        </button>
       </div>
     </div>
   );

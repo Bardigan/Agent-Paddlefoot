@@ -7,7 +7,12 @@
   justify-content: center;
   align-items: center;
   position: sticky;
+  z-index: 100;
   top: 0;
+
+  &__sidebar-close {
+    text-align: right;      
+  }
 
   &__container {
     width: 100%;
@@ -20,7 +25,6 @@
 
   &__vt {
     font-family: VT323;
-    //font-size: 28px;
   }
 
   &__vt--red {
@@ -36,8 +40,6 @@
     font-size: 24px;
   }
 
-
-
   &__best-score {
     border-radius: 4px;
     border: 1px solid #f9f9f9;
@@ -50,8 +52,7 @@
     transition: border-color 0.25s;
     color: #f9f9f9;
     margin: 0px 2px;
-    display: inline-flex
-;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
   }
@@ -59,5 +60,64 @@
   &__score {
     color: #fff;
     font-size: 24px;
+  }
+
+  &__menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  &__sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 9999;
+    transition: width 0.3s ease;
+  }
+
+  &__sidebar--open {
+    width: 100%;
+  }
+
+  &__sidebar-content {
+    background-color: #000;
+    width: 250px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10000;
+  }
+
+  &__close-icon {
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #fff;
+    z-index: 10001;
+  }
+
+  &__sidebar .outlinedBtn, &__sidebar .noOutline {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar__timer {
+    color: #fff;
+    font-size: 18px;
+  }
+  .navbar__score {
+    font-size: 18px;
   }
 }
