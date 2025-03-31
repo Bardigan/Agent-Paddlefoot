@@ -191,12 +191,6 @@
 
 // Scale down the game for mobile devices
 @media (max-width: 768px) {
-  .platformer-gameWrp {
-    transform: scale(0.1);
-    transform-origin: top left;
-    width: 1000%;
-    height: 1000%;
-  }
 
   .touch-controls {
     position: fixed;
@@ -231,6 +225,7 @@
     justify-content: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+    user-select: none;
 
     &:active {
       background-color: rgba(0, 0, 0, 0.9);
