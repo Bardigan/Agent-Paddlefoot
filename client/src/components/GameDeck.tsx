@@ -3,11 +3,9 @@ import "./GameDeck.scss";
 import { GameContext } from "../context/GameContext";
 import Popup from "../lib/Popup";
 
-// mobile adaptation
-
 const PLAYER_SPEED = 5; // Player movement speed
-const ENEMY_SPEED = 10; // Enemy movement speed (twice as fast)
-const ENEMY_MOVE_INTERVAL = 250; // Enemy move interval in milliseconds (twice as fast)
+const ENEMY_SPEED = 10; // Enemy movement speed
+const ENEMY_MOVE_INTERVAL = 250; // Enemy move interval in milliseconds
 const ENEMY_STEPS_BEFORE_CHANGE = 5; // Number of steps before changing direction
 const NUM_WALLS = 10; // Number of walls to generate
 const MAX_WALL_GENERATION_ATTEMPTS = 100; // Maximum attempts to generate a wall without overlap
@@ -40,7 +38,7 @@ const generateWalls = (): Wall[] => {
   const walls: Wall[] = [];
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
-  const safeArea = { left: 90, top: 220, width: 100, height: 100 }; // Define the safe area around the player's respawn point
+  const safeArea = { left: 90, top: 220, width: 100, height: 100 };
 
   for (let i = 0; i < NUM_WALLS; i++) {
     let width = 0,
@@ -52,10 +50,10 @@ const generateWalls = (): Wall[] => {
       if (attempts > MAX_WALL_GENERATION_ATTEMPTS) {
         break;
       }
-      width = Math.ceil((Math.random() * (windowWidth / 5)) / 50) * 50; // Width in multiples of 50px
-      height = Math.ceil((Math.random() * (windowHeight / 5)) / 50) * 50; // Height in multiples of 50px
-      width = Math.max(width, 50); // Ensure minimum width is 50px
-      height = Math.max(height, 50); // Ensure minimum height is 50px
+      width = Math.ceil((Math.random() * (windowWidth / 5)) / 50) * 50;
+      height = Math.ceil((Math.random() * (windowHeight / 5)) / 50) * 50;
+      width = Math.max(width, 50);
+      height = Math.max(height, 50);
       left = Math.random() * (windowWidth - width);
       top = Math.random() * (windowHeight - height - 60);
       attempts++;
@@ -478,7 +476,7 @@ const PlatformerGame: React.FC = () => {
     });
   }, [playerPos, enemies]);
 
-  const isMobile = window.innerWidth <= 768; // Define a mobile breakpoint
+  const isMobile = window.innerWidth <= 768;
 
   useEffect(() => {
     const generatedWalls = generateWalls();
@@ -534,7 +532,6 @@ const PlatformerGame: React.FC = () => {
 
   useEffect(() => {
     if (coins.length === 0 && !door && gameIsStarted) {
-      // Spawn the door at a random position
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       let doorLeft: number = 0,
@@ -662,7 +659,6 @@ const PlatformerGame: React.FC = () => {
         )}
       </div>
 
-      {/* New: Touch controls for mobile */}
       <div className="touch-controls">
         <button
           className="control-button up"

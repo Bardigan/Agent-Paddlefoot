@@ -63,9 +63,8 @@ const AuthForm: React.FC = () => {
     e.preventDefault();
     const url = isLogin ? "/login" : "/register";
 
-    // Reset error message
     setErrorMessage(null);
-    setLoading(true); // Start loading spinner
+    setLoading(true);
 
     try {
       const response = await fetch(`${API}${url}`, {
@@ -86,28 +85,28 @@ const AuthForm: React.FC = () => {
           context?.login(data.token, expirationTime.toISOString(), false);
           setIsLogin(true);
         }
-        navigate("/"); // Redirect to home page
+        navigate("/");
       } else {
         const errorData = await response.json();
         setErrorMessage(
           errorData.message ||
             errorData.errors[0].msg ||
             "An error occurred. Please try again."
-        ); // Set error message
+        );
       }
     } catch (error: unknown) {
       setErrorMessage(
         (error as Error).message || "An unexpected error occurred."
-      ); // Handle unexpected errors
+      );
     } finally {
-      setLoading(false); // Stop loading spinner
+      setLoading(false);
     }
   };
 
   const toggleForm = (): void => {
     setIsLogin(!isLogin);
     setFormData({ username: "", password: "" });
-    setErrorMessage(null); // Clear error message when toggling forms
+    setErrorMessage(null);
   };
 
   return (
