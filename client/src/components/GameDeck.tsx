@@ -652,7 +652,7 @@ const PlatformerGame: React.FC = () => {
           <div className="initial-message">
             <span className={`forCarrot`}>
               <span className={`${!gameIsStarted && `blinking`}`}>
-                Press arrows or use touch controls to move. Avoid the enemies!
+                Press arrows to move. Avoid the enemies!
               </span>
             </span>
           </div>

@@ -98,6 +98,7 @@ export default function Navbar() {
         onClose={() => setShowPopup(false)}
         title="The best scores"
       >
+        {!bestScoreData && <div className="navbar__loading_msg_wrapper">Loading...</div>}
         <table className="popup__table">
           <thead>
             <tr>
