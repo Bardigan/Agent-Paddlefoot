@@ -3,8 +3,8 @@ import { GameContextProvider } from './context/GameContext';
 import { useContext, useEffect } from "react";
 import { GameContext } from './context/GameContext';
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import GameDeck from "./components/GameDeck";
-import Login from "./components/Login";
+import GameDeck from "./pages/GameDeck";
+import Login from "./pages/Login";
 import './App.scss';
 
 function Router() {

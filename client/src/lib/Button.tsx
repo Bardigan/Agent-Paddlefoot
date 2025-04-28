@@ -7,9 +7,9 @@ interface ButtonProps {
   loading?: boolean;
   onClick?: () => void;
   className?: string;
-  text?: string; // Optional, can be replaced by children
+  text?: string;
   icon?: React.ReactNode;
-  children?: React.ReactNode; // Add children prop
+  children?: React.ReactNode;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -19,7 +19,7 @@ const Button: React.FC<ButtonProps> = ({
   className = "",
   text = "",
   icon,
-  children, // Destructure children
+  children,
 }) => {
   return (
     <button
@@ -28,7 +28,7 @@ const Button: React.FC<ButtonProps> = ({
       className={`button ${className}`}
       disabled={loading}
     >
-      {children || text} {/* Render children if provided, fallback to text */}
+      {children || text}
       {icon && icon}
       {loading && <ImSpinner11 className="spinner" />}
     </button>
