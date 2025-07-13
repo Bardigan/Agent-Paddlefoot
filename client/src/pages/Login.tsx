@@ -61,7 +61,7 @@ const AuthForm: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    const url = isLogin ? "/login" : "/register";
+    const url = isLogin ? "/auth/login" : "/auth/register";
 
     setErrorMessage(null);
     setLoading(true);
